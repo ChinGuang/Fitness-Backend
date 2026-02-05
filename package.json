@@ -1,0 +1,12 @@
+{
+  "name": "fitness-backend-app",
+  "version": "1.0.0",
+  "description": "A test project for fitness centre member system",
+  "license": "ISC",
+  "author": "Gan Chin Guang",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
