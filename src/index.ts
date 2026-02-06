@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import { Auth } from './routes/auth.route';
 import { AppDataSource } from "./db/data-source"
@@ -13,6 +14,7 @@ AppDataSource.initialize().then(async () => {
   app.get('/', (req, res) => {
     res.send('Hello World!');
   })
+  app.use(express.json());
 
   app.use('/auth', Auth)
 

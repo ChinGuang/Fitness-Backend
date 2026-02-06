@@ -14,7 +14,7 @@
     "docker-up": "docker compose --env-file .env -f docker/docker-compose.yml up -d",
     "docker-down": "docker compose --env-file .env -f docker/docker-compose.yml down",
     "docker-reset": "docker compose --env-file .env -f docker/docker-compose.yml down -v",
-    "migrate": "ts-node src/db/run-migrations.ts"
+    "migrate": "ts-node src/db/migrations/001_create_admin_user.ts"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "argon2": "^0.44.0",
+    "dotenv": "^17.2.4",
     "express": "^5.2.1",
     "mysql2": "^3.16.3",
     "reflect-metadata": "^0.2.2",
