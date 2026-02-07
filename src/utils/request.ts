@@ -9,8 +9,7 @@ export class RequestUtils {
     }
     await handleToken(token);
   }
-
-  private static getBearerToken(req: Request): string | null {
+  static getBearerToken(req: Request): string | null {
     const token = req.headers['authorization']?.replace('Bearer ', '');;
     if (!token) return null;
     return token;

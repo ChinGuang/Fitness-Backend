@@ -30,6 +30,11 @@ export class AuthModule {
     return newToken;
   }
 
+  static async validateToken(token: string): Promise<boolean> {
+    const decoded = await this.validateJwtToken(token);
+    return !!decoded;
+  }
+
   static async logout(token: string): Promise<void> {
     const decoded = await this.validateJwtToken(token);
     if (!decoded) return Promise.resolve();
