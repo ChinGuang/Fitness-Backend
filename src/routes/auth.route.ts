@@ -8,14 +8,10 @@ export const Auth = Router();
 Auth.post('/login', async (req, res) => {
   try {
     const { username, password } = LoginSchema.parse(req.body);
-    const user = await AuthModule.authenticate({ name: username, pass: password });
-    if (!user) {
+    const token = await AuthModule.login({ username, password });
+    if (!token) {
       res.status(401).json({ message: 'Unauthorized' });
     } else {
-      const token = JwtModule.sign({
-        id: user.id.toString(),
-        username: user.name,
-      });
       res.status(200).json({ token, message: 'Login successful!' });
     }
   } catch (error) {
