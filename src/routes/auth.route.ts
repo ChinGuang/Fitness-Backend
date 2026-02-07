@@ -22,13 +22,11 @@ Auth.post('/login', async (req, res) => {
 
 Auth.post('/authenticate', async (req, res) => {
   try {
-    // header
     const token = req.headers['authorization']?.replace('Bearer ', '');
     if (!token) {
       res.status(401).json({ message: 'Unauthorized' });
       return;
     }
-    console.log(token);
     const decoded = JwtModule.verify(token);
     if (decoded) {
       const token = JwtModule.sign(decoded);
