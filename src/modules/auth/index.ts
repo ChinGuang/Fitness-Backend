@@ -1,20 +1,11 @@
 import { AppDataSource } from "../../db/data-source";
 import { User } from "../../entity/User";
-import argon2 from 'argon2';
+import { PasswordUtils } from "../../utils/password";
 import { JwtModule } from "../jwt";
 import { RedisModule } from "../redis";
 
-export class PasswordUtils {
-  static async hashPassword(unencryptedPassword: string): Promise<string> {
-    return await argon2.hash(unencryptedPassword);
-  }
-
-  static async verifyPassword(unencryptedPassword: string, hashedPassword: string): Promise<boolean> {
-    return await argon2.verify(hashedPassword, unencryptedPassword);
-  }
-}
-
 export class AuthModule {
+  private static readonly redisUserJwtKey: string = 'user-jwt_token';
   static async login(payload: {
     username: string,
     password: string
@@ -39,6 +30,15 @@ export class AuthModule {
     return newToken;
   }
 
+  static async logout(token: string): Promise<void> {
+    const decoded = await this.validateJwtToken(token);
+    if (!decoded) return Promise.resolve();
+    await RedisModule.hdel({
+      key: this.redisUserJwtKey,
+      field: decoded.id,
+    });
+  }
+
   private static async authenticateByPassword(payload: { name: string, pass: string }): Promise<User | null> {
     const { name, pass } = payload;
     const user = await AppDataSource.manager.findOne(User, { where: { name } });
@@ -53,7 +53,7 @@ export class AuthModule {
   }): Promise<string> {
     const token = JwtModule.sign(userPayload);
     await RedisModule.hset({
-      key: 'user-jwt_token',
+      key: this.redisUserJwtKey,
       field: userPayload.id,
       value: token,
       expireInSec: 15 * 60
@@ -69,7 +69,7 @@ export class AuthModule {
       const decoded = JwtModule.verify(token);
       if (!decoded) return null;
       const tokenFromRedis = await RedisModule.hget({
-        key: 'user-jwt_token',
+        key: this.redisUserJwtKey,
         field: decoded.id
       });
       return token === tokenFromRedis ? decoded : null;
