@@ -2,6 +2,7 @@ import { AppDataSource } from "../../db/data-source";
 import { User } from "../../entity/User";
 import argon2 from 'argon2';
 import { JwtModule } from "../jwt";
+import { RedisModule } from "../redis";
 
 export class PasswordUtils {
   static async hashPassword(unencryptedPassword: string): Promise<string> {
@@ -23,7 +24,7 @@ export class AuthModule {
     if (!user) {
       return null;
     } else {
-      const token = JwtModule.sign({
+      const token = await this.generateJwtToken({
         id: user.id.toString(),
         username: user.name,
       });
@@ -31,8 +32,14 @@ export class AuthModule {
     }
   }
 
+  static async authenticateByToken(token: string): Promise<string | null> {
+    const decoded = await this.validateJwtToken(token);
+    if (!decoded) return null;
+    const newToken = await this.generateJwtToken(decoded);
+    return newToken;
+  }
 
-  static async authenticateByPassword(payload: { name: string, pass: string }): Promise<User | null> {
+  private static async authenticateByPassword(payload: { name: string, pass: string }): Promise<User | null> {
     const { name, pass } = payload;
     const user = await AppDataSource.manager.findOne(User, { where: { name } });
     if (!user) return null;
@@ -40,10 +47,35 @@ export class AuthModule {
     return passwordMatched ? user : null;
   }
 
-  static authenticateByToken(token: string): string | null {
-    const decoded = JwtModule.verify(token);
-    if (!decoded) return null;
-    const newToken = JwtModule.sign(decoded);
-    return newToken;
+  private static async generateJwtToken(userPayload: {
+    id: string,
+    username: string
+  }): Promise<string> {
+    const token = JwtModule.sign(userPayload);
+    await RedisModule.hset({
+      key: 'user-jwt_token',
+      field: userPayload.id,
+      value: token,
+      expireInSec: 15 * 60
+    });
+    return token;
+  }
+
+  private static async validateJwtToken(token: string): Promise<{
+    id: string,
+    username: string
+  } | null> {
+    try {
+      const decoded = JwtModule.verify(token);
+      if (!decoded) return null;
+      const tokenFromRedis = await RedisModule.hget({
+        key: 'user-jwt_token',
+        field: decoded.id
+      });
+      return token === tokenFromRedis ? decoded : null;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
   }
 }

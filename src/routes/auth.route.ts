@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { LoginSchema } from "../models/user.interface";
 import { AuthModule } from "../modules/auth";
-import { JwtModule } from "../modules/jwt";
 
 export const Auth = Router();
 
@@ -20,15 +19,14 @@ Auth.post('/login', async (req, res) => {
   }
 });
 
-Auth.post('/authenticate', (req, res) => {
-
+Auth.post('/authenticate', async (req, res) => {
   const token = req.headers['authorization']?.replace('Bearer ', '');
   if (!token) {
     res.status(401).json({ message: 'Unauthorized' });
     return;
   }
   try {
-    const newToken = AuthModule.authenticateByToken(token);
+    const newToken = await AuthModule.authenticateByToken(token);
     if (newToken) {
       res.status(200).json({ message: 'Authentication successful!', token: newToken });
     } else {
