@@ -1,7 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
-import { Auth } from './routes/auth.route';
+import { AuthRouter } from './routes/auth.route';
 import { AppDataSource } from "./db/data-source"
+import { MemberRouter } from './routes/member.route';
 
 AppDataSource.initialize().then(async () => {
   const app = express();
@@ -16,6 +17,7 @@ AppDataSource.initialize().then(async () => {
   })
   app.use(express.json());
 
-  app.use('/auth', Auth)
+  app.use('/auth', AuthRouter)
+  app.use('/members', MemberRouter)
 
 }).catch(error => console.log(error))

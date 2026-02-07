@@ -3,9 +3,9 @@ import { LoginSchema } from "../models/user.interface";
 import { AuthModule } from "../modules/auth";
 import { RequestUtils } from "../utils/request";
 
-export const Auth = Router();
+export const AuthRouter = Router();
 
-Auth.post('/login', async (req, res) => {
+AuthRouter.post('/login', async (req, res) => {
   try {
     const { username, password } = LoginSchema.parse(req.body);
     const token = await AuthModule.login({ username, password });
@@ -20,7 +20,7 @@ Auth.post('/login', async (req, res) => {
   }
 });
 
-Auth.post('/authenticate', async (req, res) => {
+AuthRouter.post('/authenticate', async (req, res) => {
   await RequestUtils.withBearerToken(req, res, async (token) => {
     try {
       const newToken = await AuthModule.authenticateByToken(token);
@@ -37,7 +37,7 @@ Auth.post('/authenticate', async (req, res) => {
 
 });
 
-Auth.post('/logout', async (req, res) => {
+AuthRouter.post('/logout', async (req, res) => {
   await RequestUtils.withBearerToken(req, res, async (token) => {
     await AuthModule.logout(token);
     res.status(200).json({ message: 'Logout successful!' });
