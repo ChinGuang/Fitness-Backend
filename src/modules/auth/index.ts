@@ -19,7 +19,7 @@ export class AuthModule {
     password: string
   }): Promise<string | null> {
     const { username, password } = payload;
-    const user = await AuthModule.authenticate({ name: username, pass: password });
+    const user = await AuthModule.authenticateByPassword({ name: username, pass: password });
     if (!user) {
       return null;
     } else {
@@ -32,11 +32,18 @@ export class AuthModule {
   }
 
 
-  static async authenticate(payload: { name: string, pass: string }): Promise<User | null> {
+  static async authenticateByPassword(payload: { name: string, pass: string }): Promise<User | null> {
     const { name, pass } = payload;
     const user = await AppDataSource.manager.findOne(User, { where: { name } });
     if (!user) return null;
     const passwordMatched = await PasswordUtils.verifyPassword(pass, user.password);
     return passwordMatched ? user : null;
+  }
+
+  static authenticateByToken(token: string): string | null {
+    const decoded = JwtModule.verify(token);
+    if (!decoded) return null;
+    const newToken = JwtModule.sign(decoded);
+    return newToken;
   }
 }

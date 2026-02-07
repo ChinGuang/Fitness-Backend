@@ -20,17 +20,17 @@ Auth.post('/login', async (req, res) => {
   }
 });
 
-Auth.post('/authenticate', async (req, res) => {
+Auth.post('/authenticate', (req, res) => {
+
+  const token = req.headers['authorization']?.replace('Bearer ', '');
+  if (!token) {
+    res.status(401).json({ message: 'Unauthorized' });
+    return;
+  }
   try {
-    const token = req.headers['authorization']?.replace('Bearer ', '');
-    if (!token) {
-      res.status(401).json({ message: 'Unauthorized' });
-      return;
-    }
-    const decoded = JwtModule.verify(token);
-    if (decoded) {
-      const token = JwtModule.sign(decoded);
-      res.status(200).json({ message: 'Authentication successful!', token });
+    const newToken = AuthModule.authenticateByToken(token);
+    if (newToken) {
+      res.status(200).json({ message: 'Authentication successful!', token: newToken });
     } else {
       res.status(401).json({ message: 'Unauthorized' });
     }
