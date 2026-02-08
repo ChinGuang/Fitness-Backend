@@ -1,8 +1,9 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Gender } from "../models/member.interface";
+import { Member as MemberModel } from "../models/member.interface";
 
 @Entity()
-export class Member {
+export class Member implements MemberModel {
   @PrimaryGeneratedColumn()
   id!: number
 

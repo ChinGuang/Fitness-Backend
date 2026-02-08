@@ -1,7 +1,8 @@
 import { Like, QueryFailedError } from "typeorm";
 import { AppDataSource } from "../../db/data-source";
 import { Member } from "../../entity/Member";
-import { CreateMemberDto, ReadMembersDto } from "../../models/member.interface";
+import { CreateMemberDto, ReadMembersDto, UpdateMemberDto } from "../../models/member.interface";
+import { assignDefinedDeep } from "../../utils/type";
 
 export class MemberModule {
   static async read(payload: ReadMembersDto): Promise<Member[]> {
@@ -50,4 +51,32 @@ export class MemberModule {
       throw new Error('Failed to create member');
     }
   }
+
+  static async update(id: number, payload: UpdateMemberDto): Promise<Member | null> {
+    try {
+      const memberRepo = AppDataSource.getRepository(Member);
+      let member = await memberRepo.findOne({
+        where: {
+          id,
+        },
+        relations: {
+          profile: true
+        },
+      });
+      if (!member) {
+        return null;
+      }
+      assignDefinedDeep<Member>(member, payload);
+      const updatedMember = await memberRepo.save(member);
+      return updatedMember;
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        return null;
+      }
+      console.error(error);
+      throw new Error('Failed to update member');
+    }
+  }
+
+
 }
