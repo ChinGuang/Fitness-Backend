@@ -33,7 +33,15 @@ MemberRouter.get('/:memberId', async (req, res) => {
   }
   res.status(200).json(member);
 })
+
 // Create Member
+MemberRouter.post('/', async (req, res) => {
+  const member = await MemberModule.create(req.body);
+  if (!member) {
+    return res.status(400).json({ error: 'Failed to create member' });
+  }
+  res.status(201).json(member);
+})
 // Update Member
 // Delete Member
 

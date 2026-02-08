@@ -12,3 +12,16 @@ export const ReadMembersSchema = z.object({
 });
 
 export type ReadMembersDto = z.infer<typeof ReadMembersSchema>;
+
+export const CreateProfileSchema = z.object({
+  gender: z.enum(Gender),
+  firstName: z.string(),
+  lastName: z.string(),
+})
+
+export const CreateMemberSchema = z.object({
+  phone: z.string(),
+  profile: CreateProfileSchema,
+})
+
+export type CreateMemberDto = z.infer<typeof CreateMemberSchema>;

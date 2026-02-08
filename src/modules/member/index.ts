@@ -1,7 +1,7 @@
-import { Like } from "typeorm";
+import { Like, QueryFailedError } from "typeorm";
 import { AppDataSource } from "../../db/data-source";
 import { Member } from "../../entity/Member";
-import { ReadMembersDto } from "../../models/member.interface";
+import { CreateMemberDto, ReadMembersDto } from "../../models/member.interface";
 
 export class MemberModule {
   static async read(payload: ReadMembersDto): Promise<Member[]> {
@@ -36,5 +36,18 @@ export class MemberModule {
       },
     });
     return result;
+  }
+
+  static async create(payload: CreateMemberDto): Promise<Member | null> {
+    try {
+      const result = await AppDataSource.getRepository(Member).save(payload);
+      return result;
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        return null;
+      }
+      console.error(error);
+      throw new Error('Failed to create member');
+    }
   }
 }
