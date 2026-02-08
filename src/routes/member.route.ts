@@ -58,5 +58,12 @@ MemberRouter.put('/:memberId', async (req, res) => {
 });
 
 // Delete Member
+MemberRouter.delete('/:memberId', async (req, res) => {
+  const deleted = await MemberModule.delete(Number(req.params.memberId));
+  if (!deleted) {
+    return res.status(404).json({ error: 'Member not found' });
+  }
+  res.status(204).send();
+})
 
 // Import members from csv

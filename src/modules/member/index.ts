@@ -78,5 +78,17 @@ export class MemberModule {
     }
   }
 
-
+  static async delete(id: number): Promise<boolean> {
+    try {
+      const memberRepo = AppDataSource.getRepository(Member);
+      const result = await memberRepo.softDelete(id);
+      return result.affected ? result.affected > 0 : false;
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        return false;
+      }
+      console.error(error);
+      throw new Error('Failed to delete member');
+    }
+  }
 }
