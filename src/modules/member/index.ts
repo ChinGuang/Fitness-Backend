@@ -25,4 +25,16 @@ export class MemberModule {
     });
     return result;
   }
+
+  static async readOne(id: number): Promise<Member | null> {
+    const result = await AppDataSource.getRepository(Member).findOne({
+      where: {
+        id,
+      },
+      relations: {
+        profile: true
+      },
+    });
+    return result;
+  }
 }

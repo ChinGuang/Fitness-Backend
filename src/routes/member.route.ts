@@ -16,7 +16,23 @@ MemberRouter.get('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch members' });
   }
 });
+
+MemberRouter.param("memberId", (req, res, next, id) => {
+  const idNumber = Number(id);
+  if (isNaN(idNumber)) {
+    return res.status(400).json({ error: 'Invalid member ID type' });
+  }
+  next();
+})
+
 // View single Member
+MemberRouter.get('/:memberId', async (req, res) => {
+  const member = await MemberModule.readOne(Number(req.params.memberId));
+  if (!member) {
+    return res.status(404).json({ error: 'Member not found' });
+  }
+  res.status(200).json(member);
+})
 // Create Member
 // Update Member
 // Delete Member
