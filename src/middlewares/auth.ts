@@ -3,7 +3,7 @@ import { RequestUtils } from "../utils/request";
 import { AuthModule } from "../modules/auth";
 
 export async function verifyJwtToken(req: Request, res: Response, next: NextFunction) {
-  const token = RequestUtils.getBearerToken(req);
+  const token = RequestUtils.getJwtToken(req);
   if (!token) {
     res.status(401).json({ message: 'Unauthorized' });
     return Promise.resolve();

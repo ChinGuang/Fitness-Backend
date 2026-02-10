@@ -1,11 +1,13 @@
 import { AppDataSource } from "../../db/data-source";
 import { User } from "../../entity/User";
 import { PasswordUtils } from "../../utils/password";
+import { TimeConverter } from "../../utils/time";
 import { JwtModule } from "../jwt";
 import { RedisModule } from "../redis";
 
 export class AuthModule {
   private static readonly redisUserJwtKey: string = 'user-jwt_token';
+  private static readonly jwtTokenExpireInSec: number = TimeConverter.convertToSeconds(process.env.JWT_TOKEN_EXPIRE!);
   static async login(payload: {
     username: string,
     password: string
@@ -61,7 +63,7 @@ export class AuthModule {
       key: this.redisUserJwtKey,
       field: userPayload.id,
       value: token,
-      expireInSec: 15 * 60
+      expireInSec: this.jwtTokenExpireInSec
     });
     return token;
   }
