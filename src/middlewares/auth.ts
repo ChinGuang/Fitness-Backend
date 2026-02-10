@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { RequestUtils } from "../utils/request";
 import { AuthModule } from "../modules/auth";
+import csrf from 'csurf';
 
 export async function verifyJwtToken(req: Request, res: Response, next: NextFunction) {
   const token = RequestUtils.getJwtToken(req);
@@ -15,3 +16,12 @@ export async function verifyJwtToken(req: Request, res: Response, next: NextFunc
   }
   next();
 }
+
+export const csrfProtection = csrf({
+  cookie: {
+    key: 'XSRF-TOKEN',
+    httpOnly: false,
+    sameSite: 'lax',
+    secure: `${process.env.DEV_MODE}` !== 'true'
+  }
+})
