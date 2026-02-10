@@ -3,6 +3,7 @@ import express from 'express';
 import { AuthRouter } from './routes/auth.route';
 import { AppDataSource } from "./db/data-source"
 import { MemberRouter } from './routes/member.route';
+import cookieParser from 'cookie-parser';
 
 AppDataSource.initialize().then(async () => {
   const app = express();
@@ -16,6 +17,7 @@ AppDataSource.initialize().then(async () => {
     res.send('Hello World!');
   })
   app.use(express.json());
+  app.use(cookieParser());
 
   app.use('/auth', AuthRouter)
   app.use('/members', MemberRouter)

@@ -3,6 +3,25 @@ import { Gender } from "../models/member.interface";
 import { Member as MemberModel } from "../models/member.interface";
 
 @Entity()
+export class Profile {
+  @PrimaryGeneratedColumn()
+  id!: number;
+
+  @Column({
+    type: 'enum',
+    enum: Gender,
+    default: Gender.UNKNOWN
+  })
+  gender!: Gender;
+
+  @Column()
+  firstName!: string;
+
+  @Column()
+  lastName!: string;
+}
+
+@Entity()
 export class Member implements MemberModel {
   @PrimaryGeneratedColumn()
   id!: number
@@ -24,23 +43,4 @@ export class Member implements MemberModel {
 
   @DeleteDateColumn()
   deletedAt!: Date;
-}
-
-@Entity()
-export class Profile {
-  @PrimaryGeneratedColumn()
-  id!: number;
-
-  @Column({
-    type: 'enum',
-    enum: Gender,
-    default: Gender.UNKNOWN
-  })
-  gender!: Gender;
-
-  @Column()
-  firstName!: string;
-
-  @Column()
-  lastName!: string;
 }

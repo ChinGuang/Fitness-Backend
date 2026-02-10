@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyJwtToken } from "../middlewares/auth";
+import { csrfProtection, verifyJwtToken } from "../middlewares/auth";
 import { ReadMembersSchema, UpdateMemberSchema } from "../models/member.interface";
 import { MemberModule } from "../modules/member";
 
@@ -35,7 +35,7 @@ MemberRouter.get('/:memberId', async (req, res) => {
 })
 
 // Create Member
-MemberRouter.post('/', async (req, res) => {
+MemberRouter.post('/', csrfProtection, async (req, res) => {
   const member = await MemberModule.create(req.body);
   if (!member) {
     return res.status(409).json({ error: 'Failed to create member' });
@@ -44,7 +44,7 @@ MemberRouter.post('/', async (req, res) => {
 })
 
 // Update Member
-MemberRouter.put('/:memberId', async (req, res) => {
+MemberRouter.put('/:memberId', csrfProtection, async (req, res) => {
   try {
     const payload = UpdateMemberSchema.parse(req.body);
     const updatedMember = await MemberModule.update(Number(req.params.memberId), payload);
@@ -58,7 +58,7 @@ MemberRouter.put('/:memberId', async (req, res) => {
 });
 
 // Delete Member
-MemberRouter.delete('/:memberId', async (req, res) => {
+MemberRouter.delete('/:memberId', csrfProtection, async (req, res) => {
   const deleted = await MemberModule.delete(Number(req.params.memberId));
   if (!deleted) {
     return res.status(404).json({ error: 'Member not found' });
