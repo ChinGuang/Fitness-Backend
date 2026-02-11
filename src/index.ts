@@ -4,6 +4,7 @@ import { AuthRouter } from './routes/auth.route';
 import { AppDataSource } from "./db/data-source"
 import { MemberRouter } from './routes/member.route';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 AppDataSource.initialize().then(async () => {
   const app = express();
@@ -18,6 +19,10 @@ AppDataSource.initialize().then(async () => {
   })
   app.use(express.json());
   app.use(cookieParser());
+  app.use(cors({
+    origin: process.env.FRONTEND_ORIGIN,
+    credentials: true
+  }));
 
   app.use('/auth', AuthRouter)
   app.use('/members', MemberRouter)
