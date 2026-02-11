@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { csrfProtection, verifyJwtToken } from "../middlewares/auth";
-import { ReadMembersSchema, UpdateMemberSchema } from "fitness-model-package";
+import { CreateMemberSchema, ReadMembersDto, ReadMembersSchema, UpdateMemberSchema } from "fitness-model-package";
 import { MemberModule } from "../modules/member";
 
 export const MemberRouter = Router();
@@ -9,10 +9,15 @@ MemberRouter.use(verifyJwtToken);
 // View all members
 MemberRouter.get('/', async (req, res) => {
   try {
-    const payload = ReadMembersSchema.parse(req.query);
+    const payload: ReadMembersDto = ReadMembersSchema.parse({
+      page: Number(req.query.page) || 1,
+      limit: Number(req.query.limit) || 20,
+      keyword: req.query.keyword as string || ''
+    });
     const members = await MemberModule.read(payload);
     res.status(200).json(members);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to fetch members' });
   }
 });
@@ -36,7 +41,8 @@ MemberRouter.get('/:memberId', async (req, res) => {
 
 // Create Member
 MemberRouter.post('/', csrfProtection, async (req, res) => {
-  const member = await MemberModule.create(req.body);
+  const payload = CreateMemberSchema.parse(req.body);
+  const member = await MemberModule.create(payload);
   if (!member) {
     return res.status(409).json({ error: 'Failed to create member' });
   }
