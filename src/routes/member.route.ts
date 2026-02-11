@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { csrfProtection, verifyJwtToken } from "../middlewares/auth";
-import { ReadMembersSchema, UpdateMemberSchema } from "../models/member.interface";
+import { ReadMembersSchema, UpdateMemberSchema } from "fitness-model-package";
 import { MemberModule } from "../modules/member";
 
 export const MemberRouter = Router();

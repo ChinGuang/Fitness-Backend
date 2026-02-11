@@ -23,6 +23,9 @@ importers:
       express:
         specifier: ^5.2.1
         version: 5.2.1
+      fitness-model-package:
+        specifier: ^1.0.1
+        version: 1.0.1
       ioredis:
         specifier: ^5.9.2
         version: 5.9.2
@@ -408,6 +411,9 @@ packages:
   finalhandler@2.1.1:
     resolution: {integrity: sha512-S8KoZgRZN+a5rNwqTxlZZePjT/4cnm0ROV70LedRHZ0p8u9fRID0hJUZQpkKLzro8LfmC8sx23bY6tVNxv8pQA==}
     engines: {node: '>= 18.0.0'}
+
+  fitness-model-package@1.0.1:
+    resolution: {integrity: sha512-hQkMpddV+9juB0zZr9z7iqzLAfWfNIel3hAxqW+U90vvs/8w6ln+579XUNPJWtwAo6kdlRWQjfhpqmG5u+kEdA==}
 
   for-each@0.3.5:
     resolution: {integrity: sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg==}
@@ -1305,6 +1311,10 @@ snapshots:
       statuses: 2.0.2
     transitivePeerDependencies:
       - supports-color
+
+  fitness-model-package@1.0.1:
+    dependencies:
+      zod: 4.3.6
 
   for-each@0.3.5:
     dependencies:

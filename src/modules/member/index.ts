@@ -1,7 +1,7 @@
 import { Like, QueryFailedError } from "typeorm";
 import { AppDataSource } from "../../db/data-source";
 import { Member } from "../../entity/Member";
-import { CreateMemberDto, ReadMembersDto, UpdateMemberDto } from "../../models/member.interface";
+import { CreateMemberDto, ReadMembersDto, UpdateMemberDto } from "fitness-model-package";
 import { assignDefinedDeep } from "../../utils/type";
 
 export class MemberModule {
