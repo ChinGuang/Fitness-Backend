@@ -33,7 +33,7 @@ AuthRouter.post('/authenticate', csrfProtection, async (req, res) => {
     try {
       const newToken = await AuthModule.authenticateByToken(token);
       if (newToken) {
-        setTokenCookie(res, token);
+        setTokenCookie(res, newToken);
         res.status(200).json({ message: 'Authentication successful!' });
       } else {
         res.status(401).json({ message: 'Unauthorized' });
