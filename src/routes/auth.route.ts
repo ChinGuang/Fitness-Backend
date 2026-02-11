@@ -1,5 +1,5 @@
 import { Router, Response } from "express";
-import { LoginSchema } from "../models/user.interface";
+import { LoginSchema } from "fitness-model-package";
 import { AuthModule } from "../modules/auth";
 import { RequestUtils } from "../utils/request";
 import { TimeConverter } from "../utils/time";

@@ -1,6 +1,5 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Gender } from "../models/member.interface";
-import { Member as MemberModel } from "../models/member.interface";
+import { Gender, Member as MemberModel } from "fitness-model-package";
 
 @Entity()
 export class Profile {

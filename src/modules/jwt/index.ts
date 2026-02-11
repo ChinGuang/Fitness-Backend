@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { JwtPayload, JwtSchema } from '../../models/user.interface';
+import { JwtPayload, JwtSchema } from 'fitness-model-package';
 
 export class JwtModule {
   static sign(payload: JwtPayload): string {
